@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bank Account</title>
+</head>
+<body>
+    <h1>Bank Account</h1>
+
+    <h3>Balance: Rs.<span id="balance">0</span></h3>
+
+    <h4>Deposit</h4>
+    <input type="number" id="depositAmount" placeholder="Enter amount">
+    <button onclick="deposit()">Deposit</button>
+
+    <h4>Withdraw</h4>
+    <input type="number" id="withdrawAmount" placeholder="Enter amount">
+    <button onclick="withdraw()">Withdraw</button>
+
+    <h4>Check Balance</h4>
+    <button onclick="getBalance()">Check Balance</button>
+    <p id="balanceMessage"></p>
+
+    <p id="message"></p>
+
+    <script>
+        async function getBalance() {
+        let res = await fetch("/balance");
+        let data = await res.json();
+        document.getElementById("balance").innerText = data.balance;
+        document.getElementById("balanceMessage").innerText = "Your Balance is Rs." + data.balance;
+    }
+
+        async function deposit() {
+            let amount = document.getElementById("depositAmount").value;
+            let res = await fetch("/deposit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount: amount })
+            });
+            let data = await res.json();
+            document.getElementById("message").innerText = data.message;
+            getBalance();
+        }
+
+        async function withdraw() {
+            let amount = document.getElementById("withdrawAmount").value;
+            let res = await fetch("/withdraw", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount: amount })
+            });
+            let data = await res.json();
+            document.getElementById("message").innerText = data.message;
+            getBalance();
+        }
+
+        getBalance();
+    </script>
+</body>
+</html>
